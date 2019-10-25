@@ -101,13 +101,13 @@ const styles = theme => ({
     }
 });
 
-const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
-    },
-    buttonsStyling: true
-})
+// const swalWithBootstrapButtons = Swal.mixin({
+//     customClass: {
+//         confirmButton: 'btn btn-success',
+//         cancelButton: 'btn btn-danger'
+//     },
+//     buttonsStyling: true
+// })
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -152,44 +152,39 @@ class RequestDialog extends React.Component {
         this.setState({ reqOpen: true });
     }
 
-    handleClose() {
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'PROCEED',
-            cancelButtonText: 'CANCEL',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'Your progress has not been saved!',
-                    'error'
-                )
-                this.setState({ reqOpen: false });
-                this.setState({ optOpen: false });
-            } else if (
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                this.setState({ reqOpen: true });
-                this.setState({ optOpen: false });
-            }
-        })
-        this.setState({ reqOpen: false });
-        this.setState({ optOpen: false });
-    }
+    // handleClose() {
+    //     swalWithBootstrapButtons.fire({
+    //         title: 'Are you sure?',
+    //         text: "You won't be able to revert this!",
+    //         type: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonText: 'PROCEED',
+    //         cancelButtonText: 'CANCEL',
+    //         reverseButtons: true
+    //     }).then((result) => {
+    //         if (result.value) {
+    //             swalWithBootstrapButtons.fire(
+    //                 'Cancelled',
+    //                 'Your progress has not been saved!',
+    //                 'error'
+    //             )
+    //             this.setState({ reqOpen: false });
+    //             this.setState({ optOpen: false });
+    //         } else if (
+    //             result.dismiss === Swal.DismissReason.cancel
+    //         ) {
+    //             this.setState({ reqOpen: true });
+    //             this.setState({ optOpen: false });
+    //         }
+    //     })
+    //     this.setState({ reqOpen: false });
+    //     this.setState({ optOpen: false });
+    // }
 
     handleSave() {
         this.setState({ reqOpen: false });
         this.setState({ optOpen: false });
     }
-
-    // handleNext() {
-    //     this.setState({ reqOpen: false });
-    //     this.setState({ optOpen: true });
-    // }
 
     handleBack() {
         this.setState({ reqOpen: true });
@@ -223,7 +218,7 @@ class RequestDialog extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <Dialog open={this.state.reqOpen} onClose={this.handleClose.bind(this)} aria-labelledby="form-dialog-title">
+            <Dialog open={this.state.reqOpen} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Schedule Interview</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -360,7 +355,7 @@ class RequestDialog extends React.Component {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleClose.bind(this)} color="primary">
+                    <Button onClick={this.props.handleClose} color="primary">
                         Cancel
                     </Button>
                     <Button onClick={this.props.handleNext.bind(this)} color="primary">
