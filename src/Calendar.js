@@ -34,7 +34,7 @@ export default class Calendar extends React.Component {
       events: [],
       optOpen: true,
       reqOpen: true,
-      value: 'female',
+      value: [],
       background: ['#280e3a', '#fff', '#fff', '#fff'],
       color: ['#fff', '#000', '#000', '#000'],
       age: 0,
@@ -81,6 +81,10 @@ export default class Calendar extends React.Component {
     this.setState({ reqOpen: false });
     this.setState({ optOpen: true });
   }
+
+  // handleChange = (event) => {
+  //   this.setState({ value: event.target.value });
+  // }
 
   // requestDialog = (
   //   <RequestDialog {...this.props}></RequestDialog>
@@ -139,7 +143,14 @@ export default class Calendar extends React.Component {
         >
           <i className="fas fa-plus"></i>
         </Fab>
-        {this.state.reqOpen && <RequestDialog handleNext={this.handleNext} handleClose={this.handleClose}></RequestDialog>}
+        {this.state.reqOpen &&
+          <RequestDialog
+            handleNext={this.handleNext}
+            handleClose={this.handleClose}
+            handleChange={this.handleChange}
+            {...this.state}
+          ></RequestDialog>
+        }
       </div>
     );
   }

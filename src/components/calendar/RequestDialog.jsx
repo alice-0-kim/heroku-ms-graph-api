@@ -8,12 +8,7 @@ import {
     Avatar,
     Button,
     ButtonGroup,
-    Card,
-    CardActions,
-    CardContent,
-    Fab,
     FormControl,
-    Typography,
     Chip,
     Dialog,
     DialogActions,
@@ -25,89 +20,16 @@ import {
     Input,
     InputAdornment,
     InputLabel,
-    Paper,
     Select,
     TextField,
 } from '@material-ui/core';
 
 const styles = theme => ({
-    title: {
-        fontDuration: 'normal',
-        marginLeft: '30px',
-    },
-    flex: {
-        display: 'flex',
-        [theme.breakpoints.down('sm')]: {
-            display: 'block',
-        },
-    },
-    calendar: {
-        // margin: '0 10px',
-        height: '700px',
-    },
-    component: {
-        width: 'calc(100% / 7)',
-        color: '#fff',
-        height: 'fit-content',
-        textAlign: 'center',
-        [theme.breakpoints.down('sm')]: {
-            width: 'inherit',
-        },
-    },
-    label: {
-        padding: '7.5px 0',
-        backgroundColor: '#280e3a',
-        margin: '0',
-    },
-    bar: {
-        width: '5px',
-        height: '84px',
-        backgroundColor: '#e91e63',
-        borderRadius: '15px',
-    },
-    detail: {
-        color: '#000',
-        fontSize: '12px',
-        textAlign: 'left',
-        lineHeight: '1',
-        marginLeft: '10px',
-    },
-    event: {
-        display: 'flex',
-    },
-    header: {
-        justifyContent: 'space-between',
-    },
-    button: {
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        fontSize: '16px',
-        outline: 'none',
-        [theme.breakpoints.down('sm')]: {
-            margin: 'auto',
-        },
-    },
-    icon: {
-        margin: 'auto',
-    },
-    iconLabel: {
-        marginLeft: '10px',
-        marginRight: '30px',
-    },
     duration: {
         padding: '5px 30px',
         borderColor: '#765ea8',
     }
 });
-
-// const swalWithBootstrapButtons = Swal.mixin({
-//     customClass: {
-//         confirmButton: 'btn btn-success',
-//         cancelButton: 'btn btn-danger'
-//     },
-//     buttonsStyling: true
-// })
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -133,71 +55,47 @@ const names = [
     'Kelly Snyder',
 ];
 
-class RequestDialog extends React.Component {
+class RequestDialog extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            optOpen: true,
-            reqOpen: true,
-            // value: ['female'],
-            background: ['#280e3a', '#fff', '#fff', '#fff'],
-            color: ['#fff', '#000', '#000', '#000'],
-            // personName: [""],
-            age: 0,
+            value: props.value,
+            background: props.background,
+            color: props.color,
+            // optOpen: true,
+            // reqOpen: true,
+            // value: [],
+            // background: ['#280e3a', '#fff', '#fff', '#fff'],
+            // color: ['#fff', '#000', '#000', '#000'],
+            // // personName: [""],
+            // age: 0,
         };
+
+        console.log(this.state)
     }
 
-    handleOpen() {
-        this.setState({ reqOpen: true });
+    handleChange = (event) => {
+        this.setState({ value: event.target.value });
     }
 
-    // handleClose() {
-    //     swalWithBootstrapButtons.fire({
-    //         title: 'Are you sure?',
-    //         text: "You won't be able to revert this!",
-    //         type: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonText: 'PROCEED',
-    //         cancelButtonText: 'CANCEL',
-    //         reverseButtons: true
-    //     }).then((result) => {
-    //         if (result.value) {
-    //             swalWithBootstrapButtons.fire(
-    //                 'Cancelled',
-    //                 'Your progress has not been saved!',
-    //                 'error'
-    //             )
-    //             this.setState({ reqOpen: false });
-    //             this.setState({ optOpen: false });
-    //         } else if (
-    //             result.dismiss === Swal.DismissReason.cancel
-    //         ) {
-    //             this.setState({ reqOpen: true });
-    //             this.setState({ optOpen: false });
-    //         }
-    //     })
+    // handleSave() {
     //     this.setState({ reqOpen: false });
     //     this.setState({ optOpen: false });
     // }
 
-    handleSave() {
-        this.setState({ reqOpen: false });
-        this.setState({ optOpen: false });
-    }
+    // handleBack() {
+    //     this.setState({ reqOpen: true });
+    //     this.setState({ optOpen: false });
+    // }
 
-    handleBack() {
-        this.setState({ reqOpen: true });
-        this.setState({ optOpen: false });
-    }
+    // handleDelete() {
 
-    handleDelete() {
+    // }
 
-    }
-
-    handleChange(event) {
-        this.setState({ value: event.target.value });
-    }
+    // handleChange = (event) => {
+    //     this.setState({ value: event.target.value });
+    // }
 
     handleSelect(selected) {
         const { background, color } = this.state;
@@ -218,7 +116,7 @@ class RequestDialog extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <Dialog open={this.state.reqOpen} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={true} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Schedule Interview</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -244,7 +142,7 @@ class RequestDialog extends React.Component {
                         <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
                         <Select
                             multiple
-                            value={[]}
+                            value={this.state.value}
                             onChange={this.handleChange}
                             input={<Input id="select-multiple-chip" />}
                             renderValue={selected => (
@@ -281,21 +179,21 @@ class RequestDialog extends React.Component {
                     <div style={{ margin: '5px 5px 10px' }}>
                         <span style={{ color: 'rgba(0, 0, 0, 0.54)', margin: 'auto 10px', fontSize: 'small' }}>CC to:</span>
                         <Chip
-                            avatar={<Avatar style={{ backgroundColor: '#fc036f', color: '#fff' }}>AW</Avatar>}
+                            avatar={<Avatar style={{ backgroundColor: 'deeppink', color: '#fff', fontSize: 'xx-small' }}>AW</Avatar>}
                             label="Alice Wang"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
                             style={{ backgroundColor: '#fff' }}
                         />
                         <Chip
-                            avatar={<Avatar style={{ backgroundColor: '#033dfc', color: '#fff' }}>DK</Avatar>}
+                            avatar={<Avatar style={{ backgroundColor: 'darkslateblue', color: '#fff', fontSize: 'xx-small' }}>DK</Avatar>}
                             label="David Kennedy"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
                             style={{ backgroundColor: '#fff' }}
                         />
                         <Chip
-                            avatar={<Avatar style={{ backgroundColor: '#fcba03', color: '#fff' }}>JS</Avatar>}
+                            avatar={<Avatar style={{ backgroundColor: 'darkorange', color: '#fff', fontSize: 'xx-small' }}>JS</Avatar>}
                             label="Jason Song"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
