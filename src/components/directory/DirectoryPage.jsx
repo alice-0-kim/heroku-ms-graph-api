@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios';
 import {
   Tab,
   Tabs,
@@ -25,8 +26,15 @@ class DirectoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0
+      value: 0,
+      candidates: [],
     };
+  }
+
+  componentDidMount() {
+    axios.get('http://localhost:8080/candidates')
+      // .then(res => res.text())
+      .then(res => this.setState({ candidates: res.data }));
   }
 
   render() {
@@ -40,13 +48,13 @@ class DirectoryPage extends Component {
       return { name, job, username };
     }
 
-    const candidates = [
-      createData('Chris Evans', 'University of British Columbia', 'c.evans@gmail.com'),
-      createData('Robert Downey Jr.', 'Simon Fraser University', 'r.downey@gmail.com'),
-      createData('Scarlet Johansen', 'British Columbia Institue of Technology', 's.johansen@gmail.com'),
-      createData('Tom Holland', 'University of Waterloo', 't.holland@gmail.com'),
-      createData('Benedict Cumberbatch', 'University of Victoria', 'b.cumberbatch@gmail.com'),
-    ];
+    // const candidates = [
+    //   createData('Chris Evans', 'University of British Columbia', 'c.evans@gmail.com'),
+    //   createData('Robert Downey Jr.', 'Simon Fraser University', 'r.downey@gmail.com'),
+    //   createData('Scarlet Johansen', 'British Columbia Institue of Technology', 's.johansen@gmail.com'),
+    //   createData('Tom Holland', 'University of Waterloo', 't.holland@gmail.com'),
+    //   createData('Benedict Cumberbatch', 'University of Victoria', 'b.cumberbatch@gmail.com'),
+    // ];
 
     const employees = [
       createData('Captain America', 'Senior Project Manager', 'c.america@galvanize.com'),
@@ -74,8 +82,8 @@ class DirectoryPage extends Component {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell>{row.job}</TableCell>
-                <TableCell>{row.username}</TableCell>
+                <TableCell>UBC</TableCell>
+                <TableCell>{row.email}</TableCell>
                 <TableCell><Button variant="outlined">Delete</Button></TableCell>
               </TableRow>
             ))}
@@ -96,7 +104,7 @@ class DirectoryPage extends Component {
           <Tab label="Candidate" />
           <Tab label="Employee" />
         </Tabs>
-        <div hidden={this.state.value !== 0}><Directory label="Candidate" rows={candidates} /></div>
+        <div hidden={this.state.value !== 0}><Directory label="Candidate" rows={this.state.candidates} /></div>
         <div hidden={this.state.value !== 1}><Directory label="Employee" rows={employees} /></div>
       </Paper>
     </div>;
