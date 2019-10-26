@@ -1,11 +1,14 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const port = process.env.PORT || 8080;
 const app = express();
 
 const { Client } = require('pg');
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(cors());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
