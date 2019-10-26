@@ -34,18 +34,18 @@ export default class Calendar extends React.Component {
       events: [],
       optOpen: true,
       reqOpen: true,
-      value: [],
+      // value: [],
+      required: [],
+      optional: [],
       background: ['#280e3a', '#fff', '#fff', '#fff'],
       color: ['#fff', '#000', '#000', '#000'],
-      age: 0,
+      // age: 0,
     };
   }
 
   handleOpen = () => {
-    console.log('It was ' + this.state.reqOpen);
     this.setState({ reqOpen: true });
     this.setState({ optOpen: false });
-    console.log('Not it is ' + this.state.reqOpen);
   }
 
   handleClose = () => {
@@ -81,14 +81,6 @@ export default class Calendar extends React.Component {
     this.setState({ reqOpen: false });
     this.setState({ optOpen: true });
   }
-
-  // handleChange = (event) => {
-  //   this.setState({ value: event.target.value });
-  // }
-
-  // requestDialog = (
-  //   <RequestDialog {...this.props}></RequestDialog>
-  // );
 
   async componentDidMount() {
     try {

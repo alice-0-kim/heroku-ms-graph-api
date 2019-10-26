@@ -28,6 +28,9 @@ const styles = theme => ({
     duration: {
         padding: '5px 30px',
         borderColor: '#765ea8',
+    },
+    chip: {
+        marginRight: '5px',
     }
 });
 
@@ -60,9 +63,11 @@ class RequestDialog extends Component {
         super(props);
 
         this.state = {
-            value: props.value,
+            // value: props.value,
             background: props.background,
             color: props.color,
+            required: props.required,
+            optional: props.optional,
             // optOpen: true,
             // reqOpen: true,
             // value: [],
@@ -75,8 +80,12 @@ class RequestDialog extends Component {
         console.log(this.state)
     }
 
-    handleChange = (event) => {
-        this.setState({ value: event.target.value });
+    updateRequiredInterviewers = (event) => {
+        this.setState({ required: event.target.value });
+    }
+
+    updateOptionalInterviewers = (event) => {
+        this.setState({ optional: event.target.value });
     }
 
     // handleSave() {
@@ -138,21 +147,35 @@ class RequestDialog extends Component {
                         }}
                         fullWidth
                     />
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
+                    <FormControl
+                        fullWidth
+                        variant="outlined">
+                        <InputLabel
+                            htmlFor="select-multiple-chip"
+                            style={{ fontSize: '12px', lineHeight: '30px' }}>
+                            Required Interviewer(s)</InputLabel>
                         <Select
                             multiple
-                            value={this.state.value}
-                            onChange={this.handleChange}
-                            input={<Input id="select-multiple-chip" />}
+                            value={this.state.required}
+                            onChange={this.updateRequiredInterviewers}
+                            input={<Input id="select-multiple-chip" disableUnderline={true} />}
                             renderValue={selected => (
                                 <div className={classes.chips}>
                                     {selected.map(value => (
-                                        <Chip key={value} label={value} className={classes.chip} />
+                                        <Chip
+                                            key={value}
+                                            label={value}
+                                            className={classes.chip}
+                                            avatar={<Avatar style={{ backgroundColor: 'darkslateblue', color: '#fff', fontSize: 'xx-small' }}>AW</Avatar>} />
                                     ))}
                                 </div>
                             )}
                             MenuProps={MenuProps}
+                            style={{
+                                border: '1px solid rgba(0, 0, 0, 0.25)',
+                                borderRadius: '5px',
+                                paddingTop: '5px',
+                            }}
                         >
                             {names.map(name => (
                                 <MenuItem key={name} value={name}>
@@ -161,21 +184,43 @@ class RequestDialog extends Component {
                             ))}
                         </Select>
                     </FormControl>
-                    <TextField
-                        margin="dense"
-                        id="optional-interviewers"
-                        label="Optional Interviewer(s)"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <PeopleIcon />
-                                </InputAdornment>
-                            ),
-                        }}
+                    <FormControl
                         fullWidth
-                    />
+                        variant="outlined">
+                        <InputLabel
+                            htmlFor="select-multiple-chip"
+                            style={{ fontSize: '12px', lineHeight: '30px' }}>
+                            Optional Interviewer(s)</InputLabel>
+                        <Select
+                            multiple
+                            value={this.state.optional}
+                            onChange={this.updateOptionalInterviewers}
+                            input={<Input id="select-multiple-chip" disableUnderline={true} />}
+                            renderValue={selected => (
+                                <div className={classes.chips}>
+                                    {selected.map(value => (
+                                        <Chip
+                                            key={value}
+                                            label={value}
+                                            className={classes.chip}
+                                            avatar={<Avatar style={{ backgroundColor: 'darkslateblue', color: '#fff', fontSize: 'xx-small' }}>AW</Avatar>} />
+                                    ))}
+                                </div>
+                            )}
+                            MenuProps={MenuProps}
+                            style={{
+                                border: '1px solid rgba(0, 0, 0, 0.25)',
+                                borderRadius: '5px',
+                                paddingTop: '5px',
+                            }}
+                        >
+                            {names.map(name => (
+                                <MenuItem key={name} value={name}>
+                                    {name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <div style={{ margin: '5px 5px 10px' }}>
                         <span style={{ color: 'rgba(0, 0, 0, 0.54)', margin: 'auto 10px', fontSize: 'small' }}>CC to:</span>
                         <Chip
@@ -183,21 +228,21 @@ class RequestDialog extends Component {
                             label="Alice Wang"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
-                            style={{ backgroundColor: '#fff' }}
+                            className={classes.chip}
                         />
                         <Chip
                             avatar={<Avatar style={{ backgroundColor: 'darkslateblue', color: '#fff', fontSize: 'xx-small' }}>DK</Avatar>}
                             label="David Kennedy"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
-                            style={{ backgroundColor: '#fff' }}
+                            className={classes.chip}
                         />
                         <Chip
                             avatar={<Avatar style={{ backgroundColor: 'darkorange', color: '#fff', fontSize: 'xx-small' }}>JS</Avatar>}
                             label="Jason Song"
                             onDelete={this.handleDelete}
                             deleteIcon={<HighlightOffRoundedIcon />}
-                            style={{ backgroundColor: '#fff' }}
+                            className={classes.chip}
                         />
                     </div>
                     <Grid item>
@@ -260,7 +305,7 @@ class RequestDialog extends Component {
                         Next
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog >
         );
     }
 }

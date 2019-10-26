@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2'
+import AddIcon from '@material-ui/icons/Add';
 import EventIcon from '@material-ui/icons/Event';
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonIcon from '@material-ui/icons/Person';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import GroupIcon from '@material-ui/icons/Group';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   Avatar,
   Button,
   ButtonGroup,
+  Card,
+  CardActions,
+  CardContent,
+  Fab,
+  FormControl,
+  Typography,
   Chip,
   Dialog,
   DialogActions,
@@ -16,14 +27,35 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  MenuItem,
+  Input,
   InputAdornment,
+  InputLabel,
   Paper,
+  Select,
   TextField,
 } from '@material-ui/core';
 
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: true
+})
+
 const styles = theme => ({
+  heading: {
+    padding: '5px',
+    textAlign: 'center',
+    borderRadius: '0',
+    fontSize: 'small'
+  },
+  paper: {
+    height: 140,
+  },
   title: {
-    fontDuration: 'normal',
+    fontWeight: 'normal',
     marginLeft: '30px',
   },
   flex: {
@@ -31,6 +63,12 @@ const styles = theme => ({
     [theme.breakpoints.down('sm')]: {
       display: 'block',
     },
+  },
+  card: {
+    margin: '5px auto',
+    '&:hover': {
+      backgroundColor: '#f9f9f9',
+    }
   },
   calendar: {
     // margin: '0 10px',
@@ -70,11 +108,13 @@ const styles = theme => ({
     justifyContent: 'space-between',
   },
   button: {
-    border: 'none',
+    // border: 'none',
     cursor: 'pointer',
     display: 'flex',
     fontSize: '16px',
     outline: 'none',
+    marginTop: '10px',
+    marginRight: '25px',
     [theme.breakpoints.down('sm')]: {
       margin: 'auto',
     },
@@ -89,25 +129,127 @@ const styles = theme => ({
   duration: {
     padding: '5px 30px',
     borderColor: '#765ea8',
+  },
+  avatar: {
+    width: '25px',
+    height: '25px',
+    fontSize: 'small',
+    marginRight: '2px',
+    '&:nth-of-type(1)': {
+      marginLeft: '2px'
+    },
+  },
+  fab: {
+    position: 'fixed',
+    right: '0',
+    bottom: '0',
+    margin: '50px 50px',
+  },
+  formControl: {
+
+  },
+  chips: {
+
+  },
+  chip: {
+
   }
 });
+
+const week = [
+  { value: 'MON', date: 14 },
+  { value: 'TUE', date: 15 },
+  { value: 'WED', date: 16 },
+  { value: 'THU', date: 17 },
+  { value: 'FRI', date: 18 },
+  { value: 'SAT', date: 19 },
+  { value: 'SUN', date: 20 }
+];
+
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 class CalendarPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      optOpen: true,
+      reqOpen: true,
+      value: 'female',
       background: ['#280e3a', '#fff', '#fff', '#fff'],
-      color: ['#fff', '#000', '#000', '#000']
+      color: ['#fff', '#000', '#000', '#000'],
+      // personName: [""],
+      age: 0,
     };
   }
 
-  handleOpen() {
-    this.setState({ open: true });
+  handleOpen = () => {
+    this.setState({ reqOpen: true });
   }
 
   handleClose() {
-    this.setState({ open: false });
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'PROCEED',
+      cancelButtonText: 'CANCEL',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Your progress has not been saved!',
+          'error'
+        )
+        this.setState({ reqOpen: false });
+        this.setState({ optOpen: false });
+      } else if (
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        this.setState({ reqOpen: true });
+        this.setState({ optOpen: false });
+      }
+    })
+    this.setState({ reqOpen: false });
+    this.setState({ optOpen: false });
+  }
+
+  handleSave() {
+    this.setState({ reqOpen: false });
+    this.setState({ optOpen: false });
+  }
+
+  handleNext() {
+    this.setState({ reqOpen: false });
+    this.setState({ optOpen: true });
+  }
+
+  handleBack() {
+    this.setState({ reqOpen: true });
+    this.setState({ optOpen: false });
   }
 
   handleDelete() {
@@ -115,7 +257,7 @@ class CalendarPage extends Component {
   }
 
   handleChange() {
-
+    this.setState({ value: event.target.value });
   }
 
   handleSelect(selected) {
@@ -139,35 +281,38 @@ class CalendarPage extends Component {
     return <div>
       <div className={clsx(classes.header, classes.flex)}>
         <h1 className={classes.title}>Calendar</h1>
-        <Button className={classes.button} onClick={this.handleOpen.bind(this)}>
-          <EventIcon className={classes.icon}></EventIcon>
-          <p>Schedule Interview</p>
-        </Button>
+        <Fab
+          className={classes.fab}
+          onClick={this.handleOpen}
+          color="primary"
+        >
+          <AddIcon></AddIcon>
+        </Fab>
       </div>
-      <Paper style={{ margin: '17px 10px auto' }} square>
-        <div className={clsx(classes.calendar, classes.flex)}>
-          {/* Mock data for scheduled interview blocks */}
-          <div className={classes.component}>
-            <p className={classes.label}>Sunday</p>
-            <div className={classes.event}>
-              <div className={classes.bar}></div>
-              <div className={classes.detail}>
-                <p>2:00 PM - 2:45 PM</p>
-                <p>John Doe</p>
-                <p>UI/UX Team</p>
-              </div>
-            </div>
-          </div>
-          <div className={classes.component}><p className={classes.label}>Monday</p></div>
-          <div className={classes.component}><p className={classes.label}>Tuesday</p></div>
-          <div className={classes.component}><p className={classes.label}>Wednesday</p></div>
-          <div className={classes.component}><p className={classes.label}>Thursday</p></div>
-          <div className={classes.component}><p className={classes.label}>Friday</p></div>
-          <div className={classes.component}><p className={classes.label}>Saturday</p></div>
-        </div>
-      </Paper>
-      {/* Mock data for scheduling an interview */}
-      <Dialog open={this.state.open} onClose={this.handleClose.bind(this)} aria-labelledby="form-dialog-title">
+      <Grid container justify="center" style={{ margin: '20px 10px auto', width: 'calc(100% - 20px)' }}>
+        {week.map(value => (
+          <Grid key={value.value} item style={{ width: 'calc((100% - 0px) / 7)', }}>
+            <Paper className={classes.heading}>
+              {value.value}
+              <Typography>{value.date}</Typography>
+            </Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+            <Paper style={{ width: '100%', height: '50px', borderRadius: '0' }}></Paper>
+          </Grid>
+        ))}
+      </Grid>
+      <Dialog open={this.state.reqOpen} onClose={this.handleClose.bind(this)} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Schedule Interview</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -189,7 +334,30 @@ class CalendarPage extends Component {
             }}
             fullWidth
           />
-          <TextField
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
+            <Select
+              multiple
+              value={this.state.personName}
+              onChange={handleChange}
+              input={<Input id="select-multiple-chip" />}
+              renderValue={selected => (
+                <div className={classes.chips}>
+                  {selected.map(value => (
+                    <Chip key={value} label={value} className={classes.chip} />
+                  ))}
+                </div>
+              )}
+              MenuProps={MenuProps}
+            >
+              {names.map(name => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* <TextField
             margin="dense"
             id="required-interviewers"
             label="Required Interviewer(s)"
@@ -203,7 +371,7 @@ class CalendarPage extends Component {
               ),
             }}
             fullWidth
-          />
+          /> */}
           <TextField
             margin="dense"
             id="optional-interviewers"
@@ -299,8 +467,89 @@ class CalendarPage extends Component {
           <Button onClick={this.handleClose.bind(this)} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.handleClose.bind(this)} color="primary">
-            Subscribe
+          <Button onClick={this.handleNext.bind(this)} color="primary">
+            Next
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={this.state.optOpen} aria-labelledby="form-options">
+        <DialogTitle id="form-options">Select Interview Slot</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Select an interview slot to schedule an interview.
+            Upon submission, emails will be sent out to the candidate and interviewers.
+          </DialogContentText>
+          <Card className={clsx(classes.card, classes.flex)}>
+            <CardContent>
+              <Typography align="center" style={{ fontWeight: 'bold', }}>
+                SEPTEMBER 20, 2019
+              </Typography>
+              <Typography align="right">2:00 PM - 3:00 PM</Typography>
+            </CardContent>
+            <CardContent style={{ padding: '0' }}>
+              <CardContent style={{ display: 'flex', paddingBottom: '0' }}>
+                <MeetingRoomIcon></MeetingRoomIcon><Typography>Room 2307</Typography>
+              </CardContent>
+              <CardContent style={{ display: 'flex', paddingTop: '0' }}>
+                <GroupIcon></GroupIcon>
+                <Avatar className={classes.avatar} style={{ backgroundColor: 'darkslateblue' }}>H</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fcba03' }}>N</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fc036f' }}>OP</Avatar>
+              </CardContent>
+            </CardContent>
+          </Card>
+          <Card className={clsx(classes.card, classes.flex)}>
+            <CardContent>
+              <Typography align="center" style={{ fontWeight: 'bold' }}>
+                SEPTEMBER 20, 2019
+              </Typography>
+              <Typography align="right">3:00 PM - 3:30 PM</Typography>
+            </CardContent>
+            <CardContent style={{ padding: '0' }}>
+              <CardContent style={{ display: 'flex', paddingBottom: '0' }}>
+                <MeetingRoomIcon></MeetingRoomIcon><Typography>Room 120</Typography>
+              </CardContent>
+              <CardContent style={{ display: 'flex', paddingTop: '0' }}>
+                <GroupIcon></GroupIcon>
+                <Avatar className={classes.avatar} style={{ backgroundColor: 'darkslateblue' }}>H</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fcba03' }}>N</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fc036f' }}>OP</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#120abc' }}>WT</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#2938da' }}>VS</Avatar>
+              </CardContent>
+            </CardContent>
+          </Card>
+          <Card className={clsx(classes.card, classes.flex)}>
+            <CardContent>
+              <Typography align="center" style={{ fontWeight: 'bold' }}>
+                SEPTEMBER 21, 2019
+              </Typography>
+              <Typography align="right">12:00 PM - 1:00 PM</Typography>
+            </CardContent>
+            <CardContent style={{ padding: '0' }}>
+              <CardContent style={{ display: 'flex', paddingBottom: '0' }}>
+                <MeetingRoomIcon></MeetingRoomIcon><Typography>Room 2307</Typography>
+              </CardContent>
+              <CardContent style={{ display: 'flex', paddingTop: '0' }}>
+                <GroupIcon></GroupIcon>
+                <Avatar className={classes.avatar} style={{ backgroundColor: 'darkslateblue' }}>H</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fcba03' }}>N</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fc036f' }}>OP</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#f12039' }}>DK</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#fdc0df' }}>J</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: '#123456' }}>QZ</Avatar>
+                <Avatar className={classes.avatar} style={{ backgroundColor: 'mediumseagreen' }}>SP</Avatar>
+                <MoreHorizIcon></MoreHorizIcon>
+              </CardContent>
+            </CardContent>
+          </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleBack.bind(this)} color="primary">
+            Back
+          </Button>
+          <Button onClick={this.handleSave.bind(this)} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>

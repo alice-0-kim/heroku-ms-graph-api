@@ -77,7 +77,19 @@ export default class NavBar extends React.Component {
 
   render() {
     // Only show calendar nav item if logged in
-    let calendarLink = null, directoryLink = null;
+    let alarmIcon = null, homeLink = null, calendarLink = null, directoryLink = null;
+    alarmIcon = (
+      <NavItem>
+        <NavLink href="#" target="_blank">
+          <i className="fas fa-bell mr-1"></i>
+        </NavLink>
+      </NavItem>
+    );
+    homeLink = (
+      <NavItem>
+        <RouterNavLink to="/" className="nav-link" exact>Home</RouterNavLink>
+      </NavItem>
+    );
     if (this.props.isAuthenticated) {
       calendarLink = (
         <NavItem>
@@ -101,9 +113,7 @@ export default class NavBar extends React.Component {
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
-                <NavItem>
-                  <RouterNavLink to="/" className="nav-link" exact>Home</RouterNavLink>
-                </NavItem>
+                {homeLink}
                 {calendarLink}
                 {directoryLink}
               </Nav>
@@ -114,6 +124,7 @@ export default class NavBar extends React.Component {
                     Docs
                   </NavLink>
                 </NavItem>
+                {alarmIcon}
                 <AuthNavItem
                   isAuthenticated={this.props.isAuthenticated}
                   authButtonMethod={this.props.authButtonMethod}
