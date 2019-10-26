@@ -10,7 +10,6 @@ import { getUserDetails } from './GraphService';
 import 'bootstrap/dist/css/bootstrap.css';
 import Calendar from './Calendar';
 import Directory from './components/directory/DirectoryPage';
-import { Client } from 'pg';
 
 class App extends Component {
   constructor(props) {
